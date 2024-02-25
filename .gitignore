@@ -1,0 +1,12 @@
+api-gateway/dist
+api-gateway/node_modules
+
+auth-services/dist
+auth-services/node_modules
+
+order-services/dist
+order-services/node_modules
+
+product-services/dist
+product-services/node_modules
+
