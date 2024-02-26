@@ -1,22 +1,23 @@
-import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { OrderModule } from './order/order.module';
+import { INestMicroservice, ValidationPipe } from '@nestjs/common';
+import { NestFactory } from '@nestjs/core';
+import { Transport } from '@nestjs/microservices';
+import { join } from 'path';
+import { AppModule } from './app.module';
+import { protobufPackage } from './order/proto/order.pb';
 
-@Module({
-  imports: [
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      database: 'micro_order',
-      username: 'postgres',
-      password: '123',
-      entities: ['dist/**/*.entity.{ts,js}'],
-      synchronize: true,
-    }),
-    OrderModule,
-  ],
-  controllers: [],
-  providers: [],
-})
-export class AppModule {}
+async function bootstrap() {
+  const app: INestMicroservice = await NestFactory.createMicroservice(AppModule, {
+    transport: Transport.GRPC,
+    options: {
+      url: '0.0.0.0:50052',
+      package: protobufPackage,
+      protoPath: join('node_modules/grpc-nest-proto/proto/order.proto'),
+    },
+  });
+
+  app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
+
+  await app.listen();
+}
+
+bootstrap();

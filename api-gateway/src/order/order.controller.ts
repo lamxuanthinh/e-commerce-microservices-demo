@@ -1,7 +1,19 @@
-import { Controller, Inject, Post, OnModuleInit, UseGuards, Req } from '@nestjs/common';
+import {
+  Controller,
+  Inject,
+  Post,
+  OnModuleInit,
+  UseGuards,
+  Req,
+} from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
 import { Observable } from 'rxjs';
-import { CreateOrderResponse, OrderServiceClient, ORDER_SERVICE_NAME, CreateOrderRequest } from './order.pb';
+import {
+  CreateOrderResponse,
+  OrderServiceClient,
+  ORDER_SERVICE_NAME,
+  CreateOrderRequest,
+} from './order.pb';
 import { AuthGuard } from '../auth/auth.guard';
 import { Request } from 'express';
 
@@ -18,7 +30,9 @@ export class OrderController implements OnModuleInit {
 
   @Post()
   @UseGuards(AuthGuard)
-  private async createOrder(@Req() req: Request): Promise<Observable<CreateOrderResponse>> {
+  private async createOrder(
+    @Req() req: Request,
+  ): Promise<Observable<CreateOrderResponse>> {
     const body: CreateOrderRequest = req.body;
 
     body.userId = <number>req.user;
